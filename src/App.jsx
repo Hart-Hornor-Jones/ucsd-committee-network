@@ -910,14 +910,14 @@ setInfo({ nodes: nodes.length, edges: edges.length, deptCounts: yrDeptCounts });
 
 const baseBtn = {
   fontFamily: 'inherit', fontSize: 12, background: 'transparent',
-  color: palette.text, border: '1px solid ' + palette.border,
+  color: palette.text, border: '0.5px solid ' + palette.border,
   borderRadius: 6, padding: '5px 10px', cursor: 'pointer'
 };
 const activeBtn = {
   ...baseBtn,
   background: palette.surface,
   borderColor: palette.text,
-  borderWidth: '2px',
+  borderWidth: '3px',
   padding: '4px 9px'
 };
 
