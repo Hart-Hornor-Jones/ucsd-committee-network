@@ -633,8 +633,8 @@ setInfo({ nodes: nodes.length, edges: edges.length, deptCounts: yrDeptCounts });
     const cmtEnter = cmtSel.enter().append('text')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
-      .style('font-family', 'Georgia, "Times New Roman", serif')
-      .style('font-style', 'italic')
+      .style('font-family', 'inherit')
+      .style('font-style', 'normal')
       .style('font-weight', '500')
       .style('pointer-events', 'none')
       .style('user-select', 'none');
