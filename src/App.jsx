@@ -185,17 +185,20 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => map[c]);
 }
 
-function edgeStyle(e, palette) {
-  if (e.type === 'current') {
-    return { stroke: palette.current, width: 1.5, opacity: 0.6, dash: null };
+function edgeStyle(e, palette, edgeFilter) {
+  // No current shared committee → former styling
+  if (e.currentCount === 0) {
+    const op = Math.max(FADE_FLOOR, FADE_BASE * Math.exp(-(e.yearsSince || 0) / FADE_TAU));
+    return { stroke: palette.former, width: 0.8, opacity: op, dash: '3 2' };
   }
-  if (e.type === 'repeated') {
+  // Currently shared AND has past history AND "repeated" is on → bold
+  if (e.pastCount > 0 && edgeFilter.repeated) {
     const op = Math.min(0.95, 0.7 + 0.04 * e.pastCount);
     const w = Math.min(5, 2 + 0.4 * e.pastCount);
     return { stroke: palette.repeated, width: w, opacity: op, dash: null };
   }
-  const op = Math.max(FADE_FLOOR, FADE_BASE * Math.exp(-(e.yearsSince || 0) / FADE_TAU));
-  return { stroke: palette.former, width: 0.8, opacity: op, dash: '3 2' };
+  // Plain current styling
+  return { stroke: palette.current, width: 1.5, opacity: 0.6, dash: null };
 }
 
 export default function CommitteeNetwork() {
@@ -568,7 +571,14 @@ useEffect(() => {
 
     const nodeById = new Map(nodes.map(n => [n.id, n]));
     const edges = net.edges
-      .filter(e => edgeFilter[e.type])
+      .filter(e => {
+        const hasCurrent = e.currentCount > 0;
+        const hasPast = e.pastCount > 0;
+        if (edgeFilter.current && hasCurrent) return true;
+        if (edgeFilter.repeated && hasCurrent && hasPast) return true;
+        if (edgeFilter.former && !hasCurrent && hasPast) return true;
+        return false;
+      })
       .map(e => Object.assign({}, e, {
         source: nodeById.get(e.source),
         target: nodeById.get(e.target)
@@ -641,7 +651,7 @@ setInfo({ nodes: nodes.length, edges: edges.length, deptCounts: yrDeptCounts });
     const edgeEnter = edgeSel.enter().append('line').attr('stroke-linecap', 'round');
     const edgeMerged = edgeEnter.merge(edgeSel);
     edgeMerged.each(function(d) {
-      const s = edgeStyle(d, pal);
+      const s = edgeStyle(d, pal, edgeFilter);
       d.__style = s;
       d3.select(this)
         .attr('stroke', s.stroke)
