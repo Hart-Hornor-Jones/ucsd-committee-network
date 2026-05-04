@@ -211,7 +211,7 @@ export default function CommitteeNetwork() {
   const [excludeCouncils, setExcludeCouncils] = useState(false);
   const [spread, setSpread] = useState(1.0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [info, setInfo] = useState({ nodes: 0, edges: 0 });
+  const [info, setInfo] = useState({ nodes: 0, edges: 0, deptCounts: new Map() });
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, html: '' });
   const [darkMode, setDarkMode] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -580,7 +580,11 @@ useEffect(() => {
       n.degree = deg;
     }
 
-    setInfo({ nodes: nodes.length, edges: edges.length });
+    const yrDeptCounts = new Map();
+for (const n of nodes) {
+  yrDeptCounts.set(n.dept, (yrDeptCounts.get(n.dept) || 0) + 1);
+}
+setInfo({ nodes: nodes.length, edges: edges.length, deptCounts: yrDeptCounts });
 
     // Build committee->members map for current year
     const committeeMembers = new Map();
@@ -899,7 +903,7 @@ useEffect(() => {
     );
   }
 
-  const sortedDepts = [...idx.deptCounts.entries()].sort((a, b) => b[1] - a[1]);
+  const sortedDepts = [...info.deptCounts.entries()].sort((a, b) => b[1] - a[1]);
   const topDepts = sortedDepts.slice(0, 18);
   const moreDepts = sortedDepts.length - topDepts.length;
   const currentYear = idx.years[yearIdx];
