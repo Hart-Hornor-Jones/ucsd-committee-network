@@ -1,16 +1,30 @@
-# React + Vite
+﻿# UCSD Academic Senate Committee Network
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive visualization of co-membership ties on the standing committees of the
+UC San Diego Academic Senate. Each node is a person (sized by how many committees they sit
+on that year); each edge is a shared committee. Companion to the
+[UCLA committee network](https://hart-hornor-jones.github.io/ucla-committee-network/).
 
-Currently, two official plugins are available:
+## Features
+- **Year slider** - step through academic years; the network re-forms for each year.
+- **Tie classes** (toggle, color-coded): *current* (serving together this year),
+  *repeated* (served together in two or more years), *former* (served together previously,
+  but not this year).
+- **Search** by name; toggle node/committee labels; exclude the large governing/plenary
+  bodies so the standing-committee structure stays legible.
+- Drag-to-pan, scroll-to-zoom, and a hover tooltip listing each person's committees and roles.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Develop
 
-## React Compiler
+    npm install
+    npm run dev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Build
 
-## Expanding the ESLint configuration
+    npm run build
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Data
+The app reads a committee-roster dataset (one row per person x committee x year), built from
+UCSD Academic Senate roster sources and de-duplicated per person/committee/year.
+
+Deployed to GitHub Pages.
